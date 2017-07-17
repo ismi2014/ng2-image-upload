@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Header, ImageService } from '../image.service';
+import { Header, Fields, ImageService } from '../image.service';
 
 export class FileHolder {
   public serverResponse: { status: number, response: any };
@@ -18,6 +18,7 @@ export class ImageUploadComponent implements OnInit {
   @Input() max: number = 100;
   @Input() url: string;
   @Input() headers: Header[];
+  @Input() fields: Fields[];
   @Input() preview: boolean = true;
   @Input() maxFileSize: number;
   @Input() withCredentials: boolean = false;
@@ -137,7 +138,7 @@ export class ImageUploadComponent implements OnInit {
       fileHolder.pending = true;
 
       this.imageService
-        .postImage(this.url, fileHolder.file, this.headers, this.partName, this.withCredentials)
+        .postImage(this.url, fileHolder.file, this.headers, this.partName, this.withCredentials, this.fields)
         .subscribe(
           response => this.onResponse(response, fileHolder),
           error => {

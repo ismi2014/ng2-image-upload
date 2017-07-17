@@ -7,13 +7,18 @@ export interface Header {
   value: string;
 }
 
+export interface Fields {
+  key: string;
+  value: string;
+}
+
 @Injectable()
 export class ImageService {
 
   constructor(private http: Http) {
   }
 
-  public postImage(url: string, image: File, headers?: Header[], partName: string = 'image', withCredentials?: boolean): Observable<Response> {
+  public postImage(url: string, image: File, headers?, partName: string = 'image', withCredentials?: boolean, fields?): Observable<Response> {
     if (!url || url === '') {
       throw new Error('Url is not set! Please set it before doing queries');
     }
@@ -24,14 +29,17 @@ export class ImageService {
     }
 
     if (headers) {
-      options.headers = new Headers();
-
-      for (let header of headers)
-        options.headers.append(header.header, header.value);
+      options.headers = headers;
     }
 
     let formData: FormData = new FormData();
     formData.append(partName, image);
+
+    if (fields) {
+      for (let key in fields) {
+        formData.append(key, fields[key]);
+      }
+    }
 
     return this.http.post(url, formData, options);
   }
